@@ -10,6 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import br.uefs.ecomp.winmonster.controller.AdministradorController;
+import br.uefs.ecomp.winmonster.exceptions.ArquivoCorrompidoException;
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
 import br.uefs.ecomp.winmonster.exceptions.FilaNulaException;
 import br.uefs.ecomp.winmonster.util.Fila;
@@ -72,6 +73,10 @@ public class ManusearBotao implements ActionListener {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				} catch (ArvoreNulaException e1) {
+					e1.printStackTrace();
+				} catch (ArquivoCorrompidoException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Arquivo corrompido :(");
 					e1.printStackTrace();
 				}
 

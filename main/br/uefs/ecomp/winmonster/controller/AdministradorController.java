@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.BitSet;
 
+import br.uefs.ecomp.winmonster.exceptions.ArquivoCorrompidoException;
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
 import br.uefs.ecomp.winmonster.exceptions.FilaNulaException;
 import br.uefs.ecomp.winmonster.util.AlgoritmoHuffman;
@@ -91,12 +92,6 @@ public class AdministradorController {
 	public String decodificarTexto(No arvore, BitSet txtCod) {
 		No aux = arvore;
 		String txtDecod = "";
-//		int tamanho;
-//		if(bitFinal) {
-//			tamanho = txtCod.length() - 1;
-//		} else {
-//			tamanho = txtCod.length();
-//		}
 		for(int i = 0; i < txtCod.length() - 1; i++) {
 			if(txtCod.get(i) == false) {
 				aux = aux.getFilhoDaEsquerda();
@@ -111,47 +106,24 @@ public class AdministradorController {
 		return txtDecod;
 	}
 	
-	
-//	public String buscarCod( Lista mapa , String sequencia) {
-//		Iterador iteradorMapa = mapa.iterador ();
-//		while(iteradorMapa .temProximo()) {
-//			NoMapa noMapa = (NoMapa) iteradorMapa. obterProximo();
-//			if(noMapa.getSequencia().equals(sequencia)) {
-//				return "" + noMapa.getSimbolo ();
-//			}
-//		}
-//		return null ;
-//	}
-	
-//	public String codificarTexto(Lista mapa , String texto) {
-//		String textoCod = "";
-//		for(int i = 0; i < texto.length(); i++ ) {
-//			String sequenciaBuscada = buscar(mapa, texto.charAt(i));
-//			if(sequenciaBuscada != null) {
-//				textoCod = textoCod + sequenciaBuscada;
-//			} 
-//		}
-//		return textoCod ;
-//	}
 	public String codificarTexto(Lista mapa , String texto) {
-		//String textoCod = "";
 		StringBuffer textoCod = new StringBuffer();
 		for(int i = 0; i < texto.length(); i++ ) {
-			/************************/
 			textoCod.append(instanciaAdm.getHuff().getMapa()[(int) texto.charAt(i)].getSequencia());
 		}
 		return textoCod.toString();
 	}
-	public String buscar(Lista mapa , char simbolo) {
-		Iterador iteradorMapa = mapa.iterador ();
-		while(iteradorMapa .temProximo()) {
-			NoMapa noMapa = (NoMapa) iteradorMapa. obterProximo();
-			if(noMapa.getSimbolo() ==  simbolo) {
-				return noMapa.getSequencia();
-			}
-		}
-		return null ;
-	}
+	
+//	public String buscar(Lista mapa , char simbolo) {
+//		Iterador iteradorMapa = mapa.iterador ();
+//		while(iteradorMapa .temProximo()) {
+//			NoMapa noMapa = (NoMapa) iteradorMapa. obterProximo();
+//			if(noMapa.getSimbolo() ==  simbolo) {
+//				return noMapa.getSequencia();
+//			}
+//		}
+//		return null ;
+//	}
 	
 	public void compactar(No raiz, String txtCodificado, String caminho, String nomeArq) throws IOException {
 		nomeArq = nomeArq.replace(".txt", ".monster");
@@ -159,11 +131,11 @@ public class AdministradorController {
 		File escritaArquivo = new File(caminho);
 		FileOutputStream fos = new FileOutputStream(escritaArquivo);
 	    ObjectOutputStream escrever = new ObjectOutputStream(fos);
+	    escrever.writeInt(funcaoHash(txtCodificado));
 	    escrever.writeObject(raiz);
 	    BitSet bits = new BitSet();
 	    escreverBitSet(bits, txtCodificado);
 	    escrever.writeObject(bits);
-	    
 	    escrever.close();
 	    fos.close();
 	}
@@ -179,15 +151,21 @@ public class AdministradorController {
 		bits.set(texto.length());
 	}
 	
-	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException {
+	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
 		FileInputStream fis = new FileInputStream(file);
 	    ObjectInputStream entrada = new ObjectInputStream(fis);
+	    int hashOriginal = entrada.readInt();
+	    System.out.println("Hash Original: " +hashOriginal);
 	    No mapa = (No) entrada.readObject();
-	    //boolean bitFinal = (Boolean) entrada.readBoolean();
 	    BitSet bits = (BitSet) entrada.readObject();
 	    entrada.close();
 		String txtDecod = decodificarTexto(mapa, bits);
-		System.out.println("" + txtDecod);
+		int hashNova = funcaoHash(txtDecod);
+		System.out.println("Hash nova: " +hashNova);
+		if(hashOriginal != hashNova) {
+			//throw new ArquivoCorrompidoException();
+		}
+		//System.out.println("" + txtDecod);
 		File arquivo = new File(file.getPath().replace(nomeArq, "") + "novo.txt"); 
 		FileWriter fw = new FileWriter(arquivo);  
 		BufferedWriter bw = new BufferedWriter(fw);  
