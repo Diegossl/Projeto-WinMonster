@@ -131,7 +131,7 @@ public class AdministradorController {
 		StringBuffer textoCod = new StringBuffer();
 		for(int i = 0; i < texto.length(); i++ ) {
 			/************************/
-			textoCod.append(instanciaAdm.getHuff().getMapa()[i]);
+			textoCod.append(instanciaAdm.getHuff().getMapa()[(int) texto.charAt(i)].getSequencia());
 		}
 		return textoCod.toString();
 	}
