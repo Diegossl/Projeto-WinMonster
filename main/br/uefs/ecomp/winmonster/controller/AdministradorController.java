@@ -72,6 +72,7 @@ public class AdministradorController {
 		while(leitura.ready()){
 			texto = texto + leitura.readLine() + "\n";
 		}
+		System.out.println("" +texto);
 		leitura.close();
 		file.close();
 		return texto;
@@ -104,26 +105,35 @@ public class AdministradorController {
 		return txtDecod;
 	}
 	
-	public String buscarCod( Lista mapa , String sequencia) {
-		Iterador iteradorMapa = mapa.iterador ();
-		while(iteradorMapa .temProximo()) {
-			NoMapa noMapa = (NoMapa) iteradorMapa. obterProximo();
-			if(noMapa.getSequencia().equals(sequencia)) {
-				return "" + noMapa.getSimbolo ();
-			}
-		}
-		return null ;
-	}
+//	public String buscarCod( Lista mapa , String sequencia) {
+//		Iterador iteradorMapa = mapa.iterador ();
+//		while(iteradorMapa .temProximo()) {
+//			NoMapa noMapa = (NoMapa) iteradorMapa. obterProximo();
+//			if(noMapa.getSequencia().equals(sequencia)) {
+//				return "" + noMapa.getSimbolo ();
+//			}
+//		}
+//		return null ;
+//	}
 	
+//	public String codificarTexto(Lista mapa , String texto) {
+//		String textoCod = "";
+//		for(int i = 0; i < texto.length(); i++ ) {
+//			String sequenciaBuscada = buscar(mapa, texto.charAt(i));
+//			if(sequenciaBuscada != null) {
+//				textoCod = textoCod + sequenciaBuscada;
+//			} 
+//		}
+//		return textoCod ;
+//	}
 	public String codificarTexto(Lista mapa , String texto) {
-		String textoCod = "";
+		//String textoCod = "";
+		StringBuffer textoCod = new StringBuffer();
 		for(int i = 0; i < texto.length(); i++ ) {
-			String sequenciaBuscada = buscar(mapa, texto.charAt(i));
-			if(sequenciaBuscada != null) {
-				textoCod = textoCod + sequenciaBuscada;
-			} 
+			/************************/
+			textoCod.append(instanciaAdm.getHuff().getMapa()[i]);
 		}
-		return textoCod ;
+		return textoCod.toString();
 	}
 	public String buscar(Lista mapa , char simbolo) {
 		Iterador iteradorMapa = mapa.iterador ();
@@ -217,8 +227,10 @@ public class AdministradorController {
 		//String novoNomeArq = nomeArq.replace(".monster", ".txt");
 		File arquivo = new File(file.getPath().replace(nomeArq, ""), nomeArq + ".txt"); 
 		FileWriter fw = new FileWriter(arquivo);  
-		BufferedWriter bw = new BufferedWriter(fw);  
-		bw.write(txtDecod);
+		BufferedWriter bw = new BufferedWriter(fw);
+		String txt = txtDecod.replaceAll("\n", System.lineSeparator());
+		bw.write(txt);
 		bw.close();
 	}
+	
 }
