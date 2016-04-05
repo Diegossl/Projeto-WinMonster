@@ -88,13 +88,19 @@ public class AdministradorController {
 		return soma;
 	}
 	
-	public String decodificarTexto(No arvore, String txtCod) {
+	public String decodificarTexto(No arvore, BitSet txtCod) {
 		No aux = arvore;
 		String txtDecod = "";
-		for(int i = 0; i < txtCod.length(); i++) {
-			if(txtCod.charAt(i) == '0') {
+//		int tamanho;
+//		if(bitFinal) {
+//			tamanho = txtCod.length() - 1;
+//		} else {
+//			tamanho = txtCod.length();
+//		}
+		for(int i = 0; i < txtCod.length() - 1; i++) {
+			if(txtCod.get(i) == false) {
 				aux = aux.getFilhoDaEsquerda();
-			} else if(txtCod.charAt(i) == '1') {
+			} else if(txtCod.get(i) == true) {
 				aux = aux.getFilhoDaDireita();
 			}
 			if(aux.eFolha()) {
@@ -104,6 +110,7 @@ public class AdministradorController {
 		}
 		return txtDecod;
 	}
+	
 	
 //	public String buscarCod( Lista mapa , String sequencia) {
 //		Iterador iteradorMapa = mapa.iterador ();
@@ -154,19 +161,14 @@ public class AdministradorController {
 	    ObjectOutputStream escrever = new ObjectOutputStream(fos);
 	    escrever.writeObject(raiz);
 	    BitSet bits = new BitSet();
-	    boolean bitFinal = escreverBitSet(bits, txtCodificado);
-	    if(bitFinal) {
-	    	escrever.writeBoolean(true);
-	    } else {
-	    	escrever.writeBoolean(false);
-	    }
+	    escreverBitSet(bits, txtCodificado);
 	    escrever.writeObject(bits);
 	    
 	    escrever.close();
 	    fos.close();
 	}
 	
-	public boolean escreverBitSet(BitSet bits, String texto) {
+	public void escreverBitSet(BitSet bits, String texto) {
 		for(int i = 0; i < texto.length() ; i++) {
 			if(texto.charAt(i) == '0') {
 				bits.clear(i);
@@ -174,62 +176,23 @@ public class AdministradorController {
 				bits.set(i);
 			}
 		}
-		if(texto.charAt(texto.length() - 1) == '0') {
-			bits.set(texto.length());
-			return true;
-		}
-		return false;
-	}
-	
-	public String bitToString(BitSet bits, boolean bitFinal) {
-		String strBits = "";
-		int tamanho;
-		if(bitFinal) {
-			tamanho = bits.length() - 1;
-		} else {
-			tamanho = bits.length();
-		}
-		for(int i = 0; i < tamanho; i++) {
-			if(bits.get(i)) {
-				strBits += "1";
-			} else {
-				strBits += "0";
-			}
-		}
-		
-		return strBits;
-	}
-	
-	public No lerMapa(File file) throws IOException, ClassNotFoundException {
-		FileInputStream fis = new FileInputStream(file);
-	    ObjectInputStream entrada = new ObjectInputStream(fis);
-	    No mapa = (No) entrada.readObject();
-	    entrada.close();
-	    return mapa;
-	}
-	
-	public String lerTexto(File file) throws IOException, ClassNotFoundException {
-		FileInputStream fis = new FileInputStream(file);
-	    ObjectInputStream entrada = new ObjectInputStream(fis);
-	    entrada.readObject();
-	    boolean bitFinal = (boolean) entrada.readBoolean();
-	    BitSet bits = (BitSet) entrada.readObject();
-	    String texto = bitToString(bits, bitFinal);
-	    entrada.close();
-	    return texto;		
+		bits.set(texto.length());
 	}
 	
 	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException {
-		No mapa = lerMapa(file);
-		String txtCod = lerTexto(file);
-		//mapeamento(mapa);
-		String txtDecod = decodificarTexto(mapa, txtCod);
-		//String novoNomeArq = nomeArq.replace(".monster", ".txt");
-		File arquivo = new File(file.getPath().replace(nomeArq, ""), nomeArq + ".txt"); 
+		FileInputStream fis = new FileInputStream(file);
+	    ObjectInputStream entrada = new ObjectInputStream(fis);
+	    No mapa = (No) entrada.readObject();
+	    //boolean bitFinal = (Boolean) entrada.readBoolean();
+	    BitSet bits = (BitSet) entrada.readObject();
+	    entrada.close();
+		String txtDecod = decodificarTexto(mapa, bits);
+		System.out.println("" + txtDecod);
+		File arquivo = new File(file.getPath().replace(nomeArq, "") + "novo.txt"); 
 		FileWriter fw = new FileWriter(arquivo);  
-		BufferedWriter bw = new BufferedWriter(fw);
-		String txt = txtDecod.replaceAll("\n", System.lineSeparator());
-		bw.write(txt);
+		BufferedWriter bw = new BufferedWriter(fw);  
+		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator());
+		bw.write(txtAtualizado);
 		bw.close();
 	}
 	
