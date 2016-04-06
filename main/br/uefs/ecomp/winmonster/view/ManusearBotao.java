@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import br.uefs.ecomp.winmonster.controller.AdministradorController;
 import br.uefs.ecomp.winmonster.exceptions.ArquivoCorrompidoException;
@@ -32,8 +33,11 @@ public class ManusearBotao implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == compactar){
 			JFileChooser fc = new JFileChooser(); 
+			FileNameExtensionFilter filtroDescomp = new FileNameExtensionFilter("Arquivos de texto", "txt", "Arquivo de c++", "cpp", "Arquivos html", "html");
+			fc.setFileFilter(filtroDescomp);
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY); 
 			fc.setDialogTitle("Selecionar Arquivo"); 
+			
 			int resposta = fc.showOpenDialog(null);
 			if (resposta == JFileChooser.APPROVE_OPTION) { 
 				File arquivo = fc.getSelectedFile();
@@ -60,6 +64,8 @@ public class ManusearBotao implements ActionListener {
 			JFileChooser fc = new JFileChooser(); //cria um novo selecionador de arquivos
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY); //configura o selecionador para só receber arquivos
 			fc.setDialogTitle(" Selecionar Arquivo "); //define o título da janela de seleção
+			FileNameExtensionFilter filtroComp = new FileNameExtensionFilter("Arquivos comprimidos winMonster", "monster");
+			fc.setFileFilter(filtroComp);
 			int resposta = fc.showOpenDialog(null); //abre a janela de seleção e guarda a ação do usuário em resposta
 			if (resposta == JFileChooser.APPROVE_OPTION) { 
 				File arquivo = fc.getSelectedFile();

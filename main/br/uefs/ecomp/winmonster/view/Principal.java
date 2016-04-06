@@ -18,6 +18,7 @@ public class Principal {
 		
 		GUI gui = new GUI();
 		gui.InterfaceGrafica();
+		System.out.println((char) 353);
 
 		/*File arquivo = new File("C:/frase.txt");
 		

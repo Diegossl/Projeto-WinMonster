@@ -126,8 +126,8 @@ public class AdministradorController {
 //	}
 	
 	public void compactar(No raiz, String txtCodificado, String caminho, String nomeArq) throws IOException {
-		nomeArq = nomeArq.replace(".txt", ".monster");
-		caminho = caminho + nomeArq;		
+		//nomeArq = nomeArq.replace(".txt", ".monster");
+		caminho = caminho + nomeArq + ".monster";		
 		File escritaArquivo = new File(caminho);
 		FileOutputStream fos = new FileOutputStream(escritaArquivo);
 	    ObjectOutputStream escrever = new ObjectOutputStream(fos);
@@ -162,16 +162,19 @@ public class AdministradorController {
 		String txtDecod = decodificarTexto(mapa, bits);
 		int hashNova = funcaoHash(txtDecod);
 		System.out.println("Hash nova: " +hashNova);
-		if(hashOriginal != hashNova) {
-			//throw new ArquivoCorrompidoException();
-		}
+		verificarIntegridade(hashOriginal, hashNova);
 		//System.out.println("" + txtDecod);
-		File arquivo = new File(file.getPath().replace(nomeArq, "") + "novo.txt"); 
+		File arquivo = new File(file.getPath().replace(".monter", "")); 
 		FileWriter fw = new FileWriter(arquivo);  
 		BufferedWriter bw = new BufferedWriter(fw);  
 		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator());
+		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1);
 		bw.write(txtAtualizado);
 		bw.close();
 	}
-	
+	public void verificarIntegridade(int hashOriginal, int hashNova) throws ArquivoCorrompidoException {
+		if(hashOriginal != hashNova) {
+			//throw new ArquivoCorrompidoException();
+		}
+	}
 }
