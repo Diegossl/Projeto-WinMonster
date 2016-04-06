@@ -130,30 +130,37 @@ public class AlgoritmoHuffman {
 			} else if(txtCod.get(i) == true) { // Se for um, para a direita
 				aux = aux.getFilhoDaDireita();
 			}
-			if(aux.eFolha()) { 
-				txtDecod.append(aux.getSimbolo());
-				aux = arvore;
+			if(aux.eFolha()) { // Se for folha, é porque a sequência binária equivale ao caractere presente nela 
+				txtDecod.append(aux.getSimbolo()); // Atualiza o buffer
+				aux = arvore; // reseta a árvore para a raiz
 			}
 		}
 		return txtDecod.toString();
-		
-		
 	}
-	
+	/**
+	 * Esse método realiza a coficação do texto
+	 * @param Texto a ser codificado
+	 * @return Texto Codificado
+	 */
 	public String codificarTexto(String texto) {
-		StringBuffer textoCod = new StringBuffer();
-		for(int i = 0; i < texto.length(); i++ ) {
-			textoCod.append(mapa[(int) texto.charAt(i)]);
+		StringBuffer textoCod = new StringBuffer(); // um string buffer é criado
+		for(int i = 0; i < texto.length(); i++ ) { //a string a ser codificada é percorrida 
+			textoCod.append(mapa[(int) texto.charAt(i)]); // é buscado a sequência passando o caractere como índice
 		}
 		return textoCod.toString();
 	}
-	
+	/**
+	 * Realiza o mapeamento, ou seja, a criação de um vetor que relacione as sequências obtidas na árvore
+	 * com os caracteres (índices)
+	 * @param no
+	 * @throws IOException
+	 * @throws ArvoreNulaException
+	 */
 	public void mapeamento(No no) throws IOException, ArvoreNulaException{
-		if(no == null)
+		if(no == null) // Verifica se a árvore é nula
 			throw new ArvoreNulaException(); 
-		if(no.getFilhoDaEsquerda() == null && no.getFilhoDaDireita() == null){
-			//NoMapa folha = new NoMapa(arestas, no.getSimbolo());
-			mapa[(char) no.getSimbolo()] = arestas;
+		if(no.eFolha()){ // Se for folha
+			mapa[(char) no.getSimbolo()] = arestas; // Adiciona a sequência de acordo com o caractere
 			return;
 		}
 		arestas = arestas + 0;
