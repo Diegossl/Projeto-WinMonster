@@ -48,8 +48,8 @@ public class ManusearBotao implements ActionListener {
 					No raiz = controllerAdm.construirArvore(fila);
 					controllerAdm.getHuff().mapeamento(raiz);
 					String textoCod = controllerAdm.codificarTexto(controllerAdm.getHuff().getTextoOriginal());
-					System.out.println("Hash antes compactar: ");
-					controllerAdm.compactar(raiz, textoCod, caminho, nomeArquivo);
+					System.out.println("Hash antes compactar:"  +controllerAdm.funcaoHash(controllerAdm.getHuff().getTextoOriginal()));
+					controllerAdm.compactar(raiz, textoCod, caminho, nomeArquivo, controllerAdm.getHuff().getTextoOriginal());
 					JOptionPane.showMessageDialog(null, "Compactação realizada com sucesso!");
 
 				}catch(IOException e2){
