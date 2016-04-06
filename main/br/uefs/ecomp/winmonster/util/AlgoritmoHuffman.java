@@ -47,13 +47,13 @@ public class AlgoritmoHuffman {
 	public Fila contaFrequencias(File arquivo) throws IOException{
 		No[] vetor = new No[256];
 		Fila filaNo = new Fila();
-		StringBuffer str = new StringBuffer();
+		String texto = "";
 		FileReader file = new FileReader(arquivo);
 		BufferedReader leitura = new BufferedReader(file);
 		while(leitura.ready()){
-			str.append(leitura.readLine()+ "\n");
-			for(int i = 0; i < str.length(); i++) {
-				char ch = str.charAt(i);
+			texto = leitura.readLine()+ "\n";
+			for(int i = 0; i < texto.length(); i++) {
+				char ch = texto.charAt(i);
 				if(vetor[(int) ch] == null) {
 					vetor[(int) ch] = new No();
 					vetor[(int) ch].setSimbolo(ch);
