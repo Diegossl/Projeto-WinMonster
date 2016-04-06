@@ -39,7 +39,6 @@ public class AdministradorController {
 		AlgoritmoHuffman.zerarSingleton(); // Zera o singleton
 		algoritmoHuffman = AlgoritmoHuffman.getInstance(); // Recupera a única instância da classe AlgoritmoHuffman
 	}
-	
 	/**
 	 * Metodo que instancia um objeto do tipo AdministradorController apenas uma vez.
 	 * @return AdministradorController
@@ -56,7 +55,6 @@ public class AdministradorController {
 	public AlgoritmoHuffman getHuff(){
 		return algoritmoHuffman;
 	}
-	
 	/**
 	 * Método que reseta a referência "instanciaAdm" permitindo criar uma instância da classe AdministradorController.
 	 * @return void
@@ -64,7 +62,6 @@ public class AdministradorController {
 	public static void zerarSingleton() {
 		instanciaAdm = null;
 	}
-	
 	/**
 	 * Método que retorna uma fila de prioridade, de nós 
 	 * @param Local onde o arquivo se encontra 
@@ -84,7 +81,7 @@ public class AdministradorController {
 	public No construirArvore(Fila filaOrdenada) throws FilaNulaException{
 		if(filaOrdenada == null) // Verifica se a fila é nula
 			throw new FilaNulaException();
-		No raiz = algoritmoHuffman.arvore(filaOrdenada);
+		No raiz = algoritmoHuffman.arvore(filaOrdenada); // Constroe e árvore com base na fila de prioridade
 		return raiz;
 	}
 	
@@ -100,7 +97,6 @@ public class AdministradorController {
 		}
 		return soma;
 	}
-	
 	/**
 	 * Método que realiza a compactação de um arquivo, ou seja, a escrita de seu texto codificado e objetos necessários para
 	 * a descompactação 
@@ -198,28 +194,62 @@ public class AdministradorController {
 	 * @throws ArvoreNulaException
 	 * @throws ArquivoCorrompidoException
 	 */
+//	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
+//	   /* Realiza a leitura dos objetos necessários para a descompactação*/
+//		Long hashOriginal = lerHash(file);
+//		
+//	    No arvore = lerArvore(file);
+//	    BitSet bits = lerTexto(file);
+//	   
+//		String txtDecod = algoritmoHuffman.decodificarTexto(arvore, bits); // Decodifica o texto, a partir da árvore e da sequência de bits
+//		Long hashNova = funcaoHash(txtDecod); // É feito um hashing no texto decodificado
+//		verificarIntegridade(hashOriginal, hashNova); // verificar se o arquivo não foi corrompido
+//		
+//		/* Métodos para a escrita no arquivo*/
+////		File arquivo = new File(file.getPath().replace(".monster", "")); // É retirado a extensão .monster do arquivo
+//		File arquivo = new File(file.getPath().replace(nomeArq, "novo.txt")); 
+//		FileWriter fw = new FileWriter(arquivo);  
+//		BufferedWriter bw = new BufferedWriter(fw);  
+//		
+//		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator()); // Transforma os '\n' em lineSeparators, para preservar a identação 
+//		//ao utilizar a classe BufferedWriter
+//		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1); // retira-se o último caractere, que é um '\n' a mais
+//		bw.write(txtAtualizado); // escreve o texto decodificado 
+//		bw.close();
+//	}
 	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
-	   /* Realiza a leitura dos objetos necessários para a descompactação*/
-		Long hashOriginal = lerHash(file);
-	    No arvore = lerArvore(file);
-	    BitSet bits = lerTexto(file);
-	   
-		String txtDecod = algoritmoHuffman.decodificarTexto(arvore, bits); // Decodifica o texto, a partir da árvore e da sequência de bits
-		Long hashNova = funcaoHash(txtDecod); // É feito um hashing no texto decodificado
-		verificarIntegridade(hashOriginal, hashNova); // verificar se o arquivo não foi corrompido
+		   /* Realiza a leitura dos objetos necessários para a descompactação*/
+			Long hashOriginal = lerHash(file);
+			long startTime = System.nanoTime();
+			No arvore = lerArvore(file);
+			long endTime = System.nanoTime();
+
+			long duration = (endTime - startTime);
+			System.out.println("Tempo ler arvore: " +duration/1000000);
+		   
+		    BitSet bits = lerTexto(file);
+		    startTime = System.nanoTime();
+			String txtDecod = algoritmoHuffman.decodificarTexto(arvore, bits); // Decodifica o texto, a partir da árvore e da sequência de bits
+			endTime = System.nanoTime();
+
+			duration = (endTime - startTime);
+			System.out.println("Tempo decodificar: " +duration/1000000);
 		
-		/* Métodos para a escrita no arquivo*/
-//		File arquivo = new File(file.getPath().replace(".monster", "")); // É retirado a extensão .monster do arquivo
-		File arquivo = new File(file.getPath().replace(nomeArq, "novo.txt")); 
-		FileWriter fw = new FileWriter(arquivo);  
-		BufferedWriter bw = new BufferedWriter(fw);  
-		
-		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator()); // Transforma os '\n' em lineSeparators, para preservar a identação 
-		//ao utilizar a classe BufferedWriter
-		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1); // retira-se o último caractere, que é um '\n' a mais
-		bw.write(txtAtualizado); // escreve o texto decodificado 
-		bw.close();
-	}
+			Long hashNova = funcaoHash(txtDecod); // É feito um hashing no texto decodificado
+			verificarIntegridade(hashOriginal, hashNova); // verificar se o arquivo não foi corrompido
+			
+			/* Métodos para a escrita no arquivo*/
+//			File arquivo = new File(file.getPath().replace(".monster", "")); // É retirado a extensão .monster do arquivo
+			File arquivo = new File(file.getPath().replace(nomeArq, "novo.txt")); 
+			FileWriter fw = new FileWriter(arquivo);  
+			BufferedWriter bw = new BufferedWriter(fw);  
+			
+			String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator()); // Transforma os '\n' em lineSeparators, para preservar a identação 
+			//ao utilizar a classe BufferedWriter
+			txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1); // retira-se o último caractere, que é um '\n' a mais
+			bw.write(txtAtualizado); // escreve o texto decodificado 
+			bw.close();
+		}
 	/**
 	 * Método que realiza a vericação da integridade 
 	 * @param hashOriginal
