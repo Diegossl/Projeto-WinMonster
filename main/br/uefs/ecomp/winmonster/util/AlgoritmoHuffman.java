@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.BitSet;
 
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
 import br.uefs.ecomp.winmonster.exceptions.FilaNulaException;
@@ -162,6 +163,30 @@ public class AlgoritmoHuffman {
 		return noPai;
 	}
 
+	public String decodificarTexto(No arvore, BitSet txtCod) {
+		No aux = arvore;
+		String txtDecod = "";
+		for(int i = 0; i < txtCod.length() - 1; i++) {
+			if(txtCod.get(i) == false) {
+				aux = aux.getFilhoDaEsquerda();
+			} else if(txtCod.get(i) == true) {
+				aux = aux.getFilhoDaDireita();
+			}
+			if(aux.eFolha()) {
+				txtDecod += aux.getSimbolo();
+				aux = arvore;
+			}
+		}
+		return txtDecod;
+	}
+	
+	public String codificarTexto(String texto) {
+		StringBuffer textoCod = new StringBuffer();
+		for(int i = 0; i < texto.length(); i++ ) {
+			textoCod.append(mapa[(int) texto.charAt(i)].getSequencia());
+		}
+		return textoCod.toString();
+	}
 //	public void mapeamento(No no) throws IOException, ArvoreNulaException{
 //		if(no == null)
 //			throw new ArvoreNulaException(); 

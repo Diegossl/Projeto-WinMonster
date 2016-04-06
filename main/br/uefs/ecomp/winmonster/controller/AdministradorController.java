@@ -22,18 +22,24 @@ import br.uefs.ecomp.winmonster.util.Iterador;
 import br.uefs.ecomp.winmonster.util.Lista;
 import br.uefs.ecomp.winmonster.util.No;
 import br.uefs.ecomp.winmonster.util.NoMapa;
-
+/**
+ * 
+ * @author Victor Munduruca e Diego Lourenço 
+ * Essa classe realiza a intermediação entre a interface e o algortimo de Huffman em si, seguindo também 
+ * a design pattern Singleton
+ *
+ */
 public class AdministradorController {
 
 
-	private static AdministradorController instanciaAdm;
-	private AlgoritmoHuffman algoritmoHuffman;
+	private static AdministradorController instanciaAdm; // Esse atributo serve como controle para o padrão Singleton
+	private AlgoritmoHuffman algoritmoHuffman; // 
 
 	private AdministradorController(){
-		AlgoritmoHuffman.zerarSingleton();
-		algoritmoHuffman = AlgoritmoHuffman.getInstance();
+		AlgoritmoHuffman.zerarSingleton(); // Zera o singleton
+		algoritmoHuffman = AlgoritmoHuffman.getInstance(); // Recupera a única instância da classe AlgoritmoHuffman
 	}
-
+	
 	/**
 	 * Metodo que instancia um objeto do tipo AdministradorController apenas uma vez.
 	 * @return AdministradorController
@@ -43,45 +49,50 @@ public class AdministradorController {
 			instanciaAdm = new AdministradorController();
 		return instanciaAdm;//Retorna a referência do mesmo objeto AdministradorController.
 	}
-
+	/**
+	 * Método que retorna a intância de AlgoritmoHuffman
+	 * @return Instância AlgoritmoHuffman
+	 */
 	public AlgoritmoHuffman getHuff(){
 		return algoritmoHuffman;
 	}
 	
-	public Fila filaDeFrequencias(File arquivo) throws IOException{
-		Fila filaOrdenada = algoritmoHuffman.contaFrequencias(arquivo);
-		return filaOrdenada;
-	}
-	
-	public No construirArvore(Fila filaOrdenada) throws FilaNulaException{
-		if(filaOrdenada == null)
-			throw new FilaNulaException();
-		No raiz = algoritmoHuffman.arvore(filaOrdenada);
-		return raiz;
-	}
-	
 	/**
 	 * Método que reseta a referência "instanciaAdm" permitindo criar uma instância da classe AdministradorController.
+	 * @return void
 	 */
 	public static void zerarSingleton() {
 		instanciaAdm = null;
 	}
 	
-	public String textoOriginal(File arquivo) throws IOException{
-		FileReader file = new FileReader(arquivo);
-		BufferedReader leitura = new BufferedReader(file);
-		String texto = "";
-		while(leitura.ready()){
-			texto = texto + leitura.readLine() + "\n";
-		}
-		System.out.println("" +texto);
-		leitura.close();
-		file.close();
-		return texto;
+	/**
+	 * Método que retorna uma fila de prioridade, de nós 
+	 * @param Local onde o arquivo se encontra 
+	 * @return Fila ordenada de nós de árvore, com base nas suas frequências
+	 * @throws IOException
+	 */
+	public Fila filaDeFrequencias(File arquivo) throws IOException{
+		Fila filaOrdenada = algoritmoHuffman.contaFrequencias(arquivo);
+		return filaOrdenada;
+	}
+	/**
+	 * Método que realiza a construção da árvore 
+	 * @param Fila de prioridade de nós, tendo a frequência de seus caracteres como base para as comparações
+	 * @return Uma árvore feita com base no algoritmo de huffman
+	 * @throws FilaNulaException
+	 */
+	public No construirArvore(Fila filaOrdenada) throws FilaNulaException{
+		if(filaOrdenada == null) // Verifica se a fila é nula
+			throw new FilaNulaException();
+		No raiz = algoritmoHuffman.arvore(filaOrdenada);
+		return raiz;
 	}
 	
-	public int funcaoHash(String texto){
-		int valor = 0, posicao = 0, soma = 0;
+	
+	
+	public Long funcaoHash(String texto){
+		int valor = 0, posicao = 0;
+		Long soma = (long) 0;
 		for(int i=0; i<texto.length(); i++){
 			valor = texto.charAt(i);
 			posicao = texto.indexOf(texto.charAt(i));
@@ -90,140 +101,134 @@ public class AdministradorController {
 		return soma;
 	}
 	
-	public String decodificarTexto(No arvore, BitSet txtCod) {
-		No aux = arvore;
-		String txtDecod = "";
-		for(int i = 0; i < txtCod.length() - 1; i++) {
-			if(txtCod.get(i) == false) {
-				aux = aux.getFilhoDaEsquerda();
-			} else if(txtCod.get(i) == true) {
-				aux = aux.getFilhoDaDireita();
-			}
-			if(aux.eFolha()) {
-				txtDecod += aux.getSimbolo();
-				aux = arvore;
-			}
-		}
-		return txtDecod;
-	}
-	
-	public String codificarTexto(Lista mapa , String texto) {
-		StringBuffer textoCod = new StringBuffer();
-		for(int i = 0; i < texto.length(); i++ ) {
-			textoCod.append(instanciaAdm.getHuff().getMapa()[(int) texto.charAt(i)].getSequencia());
-		}
-		return textoCod.toString();
-	}
-	
-//	public String buscar(Lista mapa , char simbolo) {
-//		Iterador iteradorMapa = mapa.iterador ();
-//		while(iteradorMapa .temProximo()) {
-//			NoMapa noMapa = (NoMapa) iteradorMapa. obterProximo();
-//			if(noMapa.getSimbolo() ==  simbolo) {
-//				return noMapa.getSequencia();
-//			}
-//		}
-//		return null ;
-//	}
-	
-	public void compactar(No raiz, String txtCodificado, String caminho, String nomeArq) throws IOException {
-		nomeArq = nomeArq + ".monster";
-		caminho = caminho + nomeArq;		
+	/**
+	 * Método que realiza a compactação de um arquivo, ou seja, a escrita de seu texto codificado e objetos necessários para
+	 * a descompactação 
+	 * @param Raiz de uma árvore de Huffman
+	 * @param Texto Codificado
+	 * @param Caminho onde o arquivo será compactado
+	 * @param Nome do arquivo 
+	 * @param Hash do Texto Original 
+	 * @throws IOException
+	 */
+	public void compactar(No raiz, String txtCodificado, String caminho, String nomeArq, Long hash) throws IOException {
+		
+		nomeArq = nomeArq + ".monster"; // É adicionado a extensão proprietária para a descompactação 
+		caminho = caminho + nomeArq; // O caminho é atualizafo adicionando o nome do arquivo
+		
+		/* Métodos para a escrita do arquivo*/
 		File escritaArquivo = new File(caminho);
 		FileOutputStream fos = new FileOutputStream(escritaArquivo);
 	    ObjectOutputStream escrever = new ObjectOutputStream(fos);
+	   
 	    
-	    escrever.writeObject(raiz);
-	    escrever.writeInt(funcaoHash(txtCodificado));
+	    escrever.writeLong(hash); // Escreve um Long referente ao número retornado pelo hashing do txtOriginal
+	    escrever.writeObject(raiz); // Escreve o objeto raiz
 	    BitSet bits = new BitSet();
-	    escreverBitSet(bits, txtCodificado);
-	    escrever.writeObject(bits);
-	    escrever.close();
+	    escreverBitSet(bits, txtCodificado); // COnverte a string binária txtCodificado em BitSet
+	    escrever.writeObject(bits); // Escreve esse bitSet
+	    escrever.close(); // Fecha o arquivo
 	    fos.close();
 	}
-	
+	/**
+	 * Converte uma String binária em bitSet
+	 * @param BitSet a ser atualizado
+	 * @param Texto Binário 
+	 */
 	public void escreverBitSet(BitSet bits, String texto) {
-		for(int i = 0; i < texto.length() ; i++) {
-			if(texto.charAt(i) == '0') {
-				bits.clear(i);
-			} else if(texto.charAt(i) == '1') {
+		for(int i = 0; i < texto.length() ; i++) { // Itera a string
+			if(texto.charAt(i) == '1') { // Como o bitSet é inicialiado com zero, adiciona true quando o caractere da 
+				//String é um
 				bits.set(i);
 			}
 		}
-		bits.set(texto.length());
+		bits.set(texto.length()); // Um último true é setado no bitSet, para tratar o erro em textos codificados que terminam com zero
 	}
-	public int lerHash(File file) throws IOException, ClassNotFoundException {
+	/**
+	 * Realiza a leitura do hash
+	 * @param file
+	 * @return O hash lido
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public Long lerHash(File file) throws IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(file);
 	    ObjectInputStream entrada = new ObjectInputStream(fis);
-	    entrada.readObject();
-	    int hash = (int) entrada.readInt();
+	    Long hash = (Long) entrada.readLong();
 	    entrada.close();
 	    return hash;
 	}
-	public No lerMapa(File file) throws IOException, ClassNotFoundException {
+	/**
+	 * Realiza a leitura da árvore
+	 * @param file
+	 * @return A árvore lida
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public No lerArvore(File file) throws IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(file);
 	    ObjectInputStream entrada = new ObjectInputStream(fis);
-	    
+	    entrada.readLong();
 	    No mapa = (No) entrada.readObject();
 	    entrada.close();
 	    return mapa;
 	}
-	
+	/**
+	 * Realiza a leitura do texto codificado
+	 * @param file
+	 * @return BitSet que representa o texto codificado
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	public BitSet lerTexto(File file) throws IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(file);
 	    ObjectInputStream entrada = new ObjectInputStream(fis);
+	    entrada.readLong();
 	    entrada.readObject();
-	    entrada.readInt();
 	    BitSet bits = (BitSet) entrada.readObject();
 	    entrada.close();
 	    return bits;		
 	}
-
-//	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
-//		FileInputStream fis = new FileInputStream(file);
-//	    ObjectInputStream entrada = new ObjectInputStream(fis);
-//	    int hashOriginal = entrada.readInt();
-//	    System.out.println("Hash Original: " +hashOriginal);
-//	    No mapa = (No) entrada.readObject();
-//	    BitSet bits = (BitSet) entrada.readObject();
-//	    entrada.close();
-//		String txtDecod = decodificarTexto(mapa, bits);
-//		int hashNova = funcaoHash(txtDecod);
-//		System.out.println("Hash nova: " +hashNova);
-//		verificarIntegridade(hashOriginal, hashNova);
-//		//System.out.println("" + txtDecod);
-//		File arquivo = new File(file.getPath().replace(".monter", "(descompactado)")); 
-//		FileWriter fw = new FileWriter(arquivo);  
-//		BufferedWriter bw = new BufferedWriter(fw);  
-//		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator());
-//		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1);
-//		bw.write(txtAtualizado);
-//		bw.close();
-//	}
+	/**
+	 * Método que realiza a descompactação do arquivo
+	 * @param file
+	 * @param nomeArq
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws ArvoreNulaException
+	 * @throws ArquivoCorrompidoException
+	 */
 	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
-	    
-		int hashOriginal = lerHash(file);
-	    No mapa = lerMapa(file);
+	   /* Realiza a leitura dos objetos necessários para a descompactação*/
+		Long hashOriginal = lerHash(file);
+	    No arvore = lerArvore(file);
 	    BitSet bits = lerTexto(file);
 	   
-		String txtDecod = decodificarTexto(mapa, bits);
-		int hashNova = funcaoHash(txtDecod);
-		System.out.println("Hash Original: " +hashOriginal);
-		System.out.println("Hash nova: " +hashNova);
-		verificarIntegridade(hashOriginal, hashNova);
-		//System.out.println("" + txtDecod);
+		String txtDecod = algoritmoHuffman.decodificarTexto(arvore, bits); // Decodifica o texto, a partir da árvore e da sequência de bits
+		Long hashNova = funcaoHash(txtDecod); // É feito um hashing no texto decodificado
+		verificarIntegridade(hashOriginal, hashNova); // verificar se o arquivo não foi corrompido
 		
-		File arquivo = new File(file.getPath().replace(".monster", "")); 
+		/* Métodos para a escrita no arquivo*/
+//		File arquivo = new File(file.getPath().replace(".monster", "")); // É retirado a extensão .monster do arquivo
+		File arquivo = new File(file.getPath().replace(nomeArq, "novo.txt")); 
 		FileWriter fw = new FileWriter(arquivo);  
 		BufferedWriter bw = new BufferedWriter(fw);  
-		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator());
-		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1);
-		bw.write(txtAtualizado);
+		
+		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator()); // Transforma os '\n' em lineSeparators, para preservar a identação 
+		//ao utilizar a classe BufferedWriter
+		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1); // retira-se o último caractere, que é um '\n' a mais
+		bw.write(txtAtualizado); // escreve o texto decodificado 
 		bw.close();
 	}
-	public void verificarIntegridade(int hashOriginal, int hashNova) throws ArquivoCorrompidoException {
-		if(hashOriginal != hashNova) {
-			//throw new ArquivoCorrompidoException();
+	/**
+	 * Método que realiza a vericação da integridade 
+	 * @param hashOriginal
+	 * @param hashNova
+	 * @throws ArquivoCorrompidoException
+	 */
+	public void verificarIntegridade(Long hashOriginal, Long hashNova) throws ArquivoCorrompidoException {
+		if(!hashOriginal.equals(hashNova)) { // Se o hash orinal e a nova não forem iguais, é lançada a seguinte exceção 
+			throw new ArquivoCorrompidoException();
 		}
 	}
 }
