@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -126,13 +127,14 @@ public class AdministradorController {
 //	}
 	
 	public void compactar(No raiz, String txtCodificado, String caminho, String nomeArq) throws IOException {
-		//nomeArq = nomeArq.replace(".txt", ".monster");
-		caminho = caminho + nomeArq + ".monster";		
+		nomeArq = nomeArq + ".monster";
+		caminho = caminho + nomeArq;		
 		File escritaArquivo = new File(caminho);
 		FileOutputStream fos = new FileOutputStream(escritaArquivo);
 	    ObjectOutputStream escrever = new ObjectOutputStream(fos);
-	    escrever.writeInt(funcaoHash(txtCodificado));
+	    
 	    escrever.writeObject(raiz);
+	    escrever.writeInt(funcaoHash(txtCodificado));
 	    BitSet bits = new BitSet();
 	    escreverBitSet(bits, txtCodificado);
 	    escrever.writeObject(bits);
@@ -150,21 +152,68 @@ public class AdministradorController {
 		}
 		bits.set(texto.length());
 	}
-	
-	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
+	public int lerHash(File file) throws IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(file);
 	    ObjectInputStream entrada = new ObjectInputStream(fis);
-	    int hashOriginal = entrada.readInt();
-	    System.out.println("Hash Original: " +hashOriginal);
+	    entrada.readObject();
+	    int hash = (int) entrada.readInt();
+	    entrada.close();
+	    return hash;
+	}
+	public No lerMapa(File file) throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream(file);
+	    ObjectInputStream entrada = new ObjectInputStream(fis);
+	    
 	    No mapa = (No) entrada.readObject();
+	    entrada.close();
+	    return mapa;
+	}
+	
+	public BitSet lerTexto(File file) throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream(file);
+	    ObjectInputStream entrada = new ObjectInputStream(fis);
+	    entrada.readObject();
+	    entrada.readInt();
 	    BitSet bits = (BitSet) entrada.readObject();
 	    entrada.close();
+	    return bits;		
+	}
+
+//	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
+//		FileInputStream fis = new FileInputStream(file);
+//	    ObjectInputStream entrada = new ObjectInputStream(fis);
+//	    int hashOriginal = entrada.readInt();
+//	    System.out.println("Hash Original: " +hashOriginal);
+//	    No mapa = (No) entrada.readObject();
+//	    BitSet bits = (BitSet) entrada.readObject();
+//	    entrada.close();
+//		String txtDecod = decodificarTexto(mapa, bits);
+//		int hashNova = funcaoHash(txtDecod);
+//		System.out.println("Hash nova: " +hashNova);
+//		verificarIntegridade(hashOriginal, hashNova);
+//		//System.out.println("" + txtDecod);
+//		File arquivo = new File(file.getPath().replace(".monter", "(descompactado)")); 
+//		FileWriter fw = new FileWriter(arquivo);  
+//		BufferedWriter bw = new BufferedWriter(fw);  
+//		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator());
+//		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1);
+//		bw.write(txtAtualizado);
+//		bw.close();
+//	}
+	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
+	    
+		int hashOriginal = lerHash(file);
+	    No mapa = lerMapa(file);
+	    BitSet bits = lerTexto(file);
+	   
 		String txtDecod = decodificarTexto(mapa, bits);
 		int hashNova = funcaoHash(txtDecod);
+		System.out.println("Hash Original: " +hashOriginal);
 		System.out.println("Hash nova: " +hashNova);
 		verificarIntegridade(hashOriginal, hashNova);
 		//System.out.println("" + txtDecod);
-		File arquivo = new File(file.getPath().replace(".monter", "")); 
+		
+		File arquivo = new File(file.getPath().replace(".monster", "")); 
 		FileWriter fw = new FileWriter(arquivo);  
 		BufferedWriter bw = new BufferedWriter(fw);  
 		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator());
