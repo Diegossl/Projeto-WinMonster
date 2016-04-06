@@ -33,8 +33,13 @@ public class ManusearBotao implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == compactar){
 			JFileChooser fc = new JFileChooser(); 
-			FileNameExtensionFilter filtroDescomp = new FileNameExtensionFilter("Arquivos de texto", "txt", "Arquivo de c++", "cpp", "Arquivos html", "html");
-			fc.setFileFilter(filtroDescomp);
+//			FileNameExtensionFilter filtroTxt = new FileNameExtensionFilter("Arquivos de texto", "txt", "Arquivo de c++", "cpp", "Arquivos html", "html");
+			FileNameExtensionFilter filtroTxt = new FileNameExtensionFilter("Arquivos de texto", "txt");
+			FileNameExtensionFilter filtroCpp = new FileNameExtensionFilter("Arquivo de c++", "cpp");
+			FileNameExtensionFilter filtroHtml = new FileNameExtensionFilter("Arquivos html", "html");
+			fc.setFileFilter(filtroTxt);
+			fc.setFileFilter(filtroCpp);
+			fc.setFileFilter(filtroHtml);
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY); 
 			fc.setDialogTitle("Selecionar Arquivo"); 
 			
@@ -48,7 +53,6 @@ public class ManusearBotao implements ActionListener {
 					No raiz = controllerAdm.construirArvore(fila);
 					controllerAdm.getHuff().mapeamento(raiz);
 					String textoCod = controllerAdm.codificarTexto(controllerAdm.getHuff().getTextoOriginal());
-					System.out.println("Hash antes compactar:"  +controllerAdm.funcaoHash(controllerAdm.getHuff().getTextoOriginal()));
 					controllerAdm.compactar(raiz, textoCod, caminho, nomeArquivo, controllerAdm.getHuff().getTextoOriginal());
 					JOptionPane.showMessageDialog(null, "Compactação realizada com sucesso!");
 
