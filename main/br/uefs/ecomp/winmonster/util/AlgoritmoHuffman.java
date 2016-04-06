@@ -11,8 +11,8 @@ import br.uefs.ecomp.winmonster.exceptions.FilaNulaException;
 public class AlgoritmoHuffman {
 
 	private static String arestas = "";
-
-	private static Lista folhas = new Lista();
+	private  String textoOriginal;
+	//private static Lista folhas = new Lista();
 	private NoMapa[] mapa = new NoMapa[256];
 	
 	
@@ -36,22 +36,24 @@ public class AlgoritmoHuffman {
 
 	public static void zerarSingleton() {
 		arestas = "";
-		folhas = new Lista();
+		//folhas = new Lista();
 		instanciaAdm = null;
 	}
 	
-	public Lista getFolhas(){
-		return folhas;
-	}
+//	public Lista getFolhas(){
+//		return folhas;
+//	}
 	
 	public Fila contaFrequencias(File arquivo) throws IOException{
 		No[] vetor = new No[256];
 		Fila filaNo = new Fila();
 		String texto = "";
+		StringBuffer str = new StringBuffer();
 		FileReader file = new FileReader(arquivo);
 		BufferedReader leitura = new BufferedReader(file);
 		while(leitura.ready()){
 			texto = leitura.readLine()+ "\n";
+			str.append(texto);
 			for(int i = 0; i < texto.length(); i++) {
 				char ch = texto.charAt(i);
 				if(vetor[(int) ch] == null) {
@@ -64,10 +66,12 @@ public class AlgoritmoHuffman {
 		}
 		leitura.close();
 		file.close();
+		
 		Fila filaOrdenada = new Fila();
 		while(!filaNo.estaVazia()) {
 			filaOrdenada.inserirPrioridade(filaNo.removerInicio());
 		}
+		textoOriginal = str.toString();
 		return filaOrdenada;
 	}
 //	public Fila contaFrequencias(File arquivo) throws IOException{
@@ -192,4 +196,12 @@ public class AlgoritmoHuffman {
 		arestas = arestas.substring(0, arestas.length() - 1);
 
 	}
+
+	/**
+	 * @return the textoOriginal
+	 */
+	public String getTextoOriginal() {
+		return textoOriginal;
+	}
+
 }
