@@ -82,7 +82,7 @@ public class AdministradorControllerTeste {
 		String textoCodificado = controllerAdm.getHuff().codificarTexto(controllerAdm.getHuff().getTextoOriginal());
 
 		try {
-			controllerAdm.compactar(raiz, textoCodificado, file.getPath(), file.getName(), controllerAdm.funcaoHash(controllerAdm.getHuff().getTextoOriginal()));
+			controllerAdm.compactar(raiz, textoCodificado, file.getPath(), file.getPath().replace(file.getName(), ""), controllerAdm.funcaoHash(controllerAdm.getHuff().getTextoOriginal()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -134,7 +134,7 @@ public class AdministradorControllerTeste {
 		String textoCodificado = controllerAdm.getHuff().codificarTexto(controllerAdm.getHuff().getTextoOriginal());
 
 		try {
-			controllerAdm.compactar(raiz, textoCodificado, file.getPath(), file.getName(), controllerAdm.funcaoHash(controllerAdm.getHuff().getTextoOriginal()));
+			controllerAdm.compactar(raiz, textoCodificado, file.getPath().replace(file.getName(), ""), file.getName(), controllerAdm.funcaoHash(controllerAdm.getHuff().getTextoOriginal()));
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
@@ -144,13 +144,13 @@ public class AdministradorControllerTeste {
 		File arquivo = new File("arquivosTestes/testeCompactar.txt.monster");
 
 		try {
-			controllerAdm.descompactar(arquivo, arquivo.getName().replace(".txt", "(compactado).txt"));
+			controllerAdm.descompactar(arquivo, arquivo.getName());
 		} catch (ClassNotFoundException | IOException | ArvoreNulaException | ArquivoCorrompidoException e) {
 			e.printStackTrace();
 			fail();
 		}
-		File arquivoOriginal = new File("arquivosTestes/testeCompactar.txt");
-		File arquivoDescompactado = new File("arquivosTestes/testeCompactar(compactado).txt");
+		File arquivoOriginal = new File("arquivosTestes/testeCompactar - Copia.txt");
+		File arquivoDescompactado = new File("arquivosTestes/testeCompactar.txt");
 		
 
 		int chave = 0;

@@ -33,13 +33,13 @@ public class ManusearBotao implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == compactar){
 			JFileChooser fc = new JFileChooser(); 
-//			FileNameExtensionFilter filtroTxt = new FileNameExtensionFilter("Arquivos de texto", "txt", "Arquivo de c++", "cpp", "Arquivos html", "html");
 			FileNameExtensionFilter filtroTxt = new FileNameExtensionFilter("Arquivos de texto", "txt");
 			FileNameExtensionFilter filtroCpp = new FileNameExtensionFilter("Arquivo de c++", "cpp");
 			FileNameExtensionFilter filtroHtml = new FileNameExtensionFilter("Arquivos html", "html");
-			fc.setFileFilter(filtroTxt);
-			fc.setFileFilter(filtroCpp);
+			
 			fc.setFileFilter(filtroHtml);
+			fc.setFileFilter(filtroCpp);
+			fc.setFileFilter(filtroTxt);
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY); 
 			fc.setDialogTitle("Selecionar Arquivo"); 
 			

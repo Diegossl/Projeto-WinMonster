@@ -24,7 +24,8 @@ import br.uefs.ecomp.winmonster.util.No;
 import br.uefs.ecomp.winmonster.util.NoMapa;
 /**
  * 
- * @author Victor Munduruca e Diego Lourenço 
+ * @author Victor Munduruca
+ * @author Diego Lourenço 
  * Essa classe realiza a intermediação entre a interface e o algortimo de Huffman em si, seguindo também 
  * a design pattern Singleton
  *
