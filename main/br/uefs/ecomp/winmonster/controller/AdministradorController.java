@@ -194,62 +194,28 @@ public class AdministradorController {
 	 * @throws ArvoreNulaException
 	 * @throws ArquivoCorrompidoException
 	 */
-//	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
-//	   /* Realiza a leitura dos objetos necessários para a descompactação*/
-//		Long hashOriginal = lerHash(file);
-//		
-//	    No arvore = lerArvore(file);
-//	    BitSet bits = lerTexto(file);
-//	   
-//		String txtDecod = algoritmoHuffman.decodificarTexto(arvore, bits); // Decodifica o texto, a partir da árvore e da sequência de bits
-//		Long hashNova = funcaoHash(txtDecod); // É feito um hashing no texto decodificado
-//		verificarIntegridade(hashOriginal, hashNova); // verificar se o arquivo não foi corrompido
-//		
-//		/* Métodos para a escrita no arquivo*/
-////		File arquivo = new File(file.getPath().replace(".monster", "")); // É retirado a extensão .monster do arquivo
-//		File arquivo = new File(file.getPath().replace(nomeArq, "novo.txt")); 
-//		FileWriter fw = new FileWriter(arquivo);  
-//		BufferedWriter bw = new BufferedWriter(fw);  
-//		
-//		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator()); // Transforma os '\n' em lineSeparators, para preservar a identação 
-//		//ao utilizar a classe BufferedWriter
-//		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1); // retira-se o último caractere, que é um '\n' a mais
-//		bw.write(txtAtualizado); // escreve o texto decodificado 
-//		bw.close();
-//	}
 	public void descompactar(File file, String nomeArq) throws ClassNotFoundException, IOException, ArvoreNulaException, ArquivoCorrompidoException {
-		   /* Realiza a leitura dos objetos necessários para a descompactação*/
-			Long hashOriginal = lerHash(file);
-			long startTime = System.nanoTime();
-			No arvore = lerArvore(file);
-			long endTime = System.nanoTime();
-
-			long duration = (endTime - startTime);
-			System.out.println("Tempo ler arvore: " +duration/1000000);
-		   
-		    BitSet bits = lerTexto(file);
-		    startTime = System.nanoTime();
-			String txtDecod = algoritmoHuffman.decodificarTexto(arvore, bits); // Decodifica o texto, a partir da árvore e da sequência de bits
-			endTime = System.nanoTime();
-
-			duration = (endTime - startTime);
-			System.out.println("Tempo decodificar: " +duration/1000000);
+	   /* Realiza a leitura dos objetos necessários para a descompactação*/
+		Long hashOriginal = lerHash(file);
 		
-			Long hashNova = funcaoHash(txtDecod); // É feito um hashing no texto decodificado
-			verificarIntegridade(hashOriginal, hashNova); // verificar se o arquivo não foi corrompido
-			
-			/* Métodos para a escrita no arquivo*/
-//			File arquivo = new File(file.getPath().replace(".monster", "")); // É retirado a extensão .monster do arquivo
-			File arquivo = new File(file.getPath().replace(nomeArq, "novo.txt")); 
-			FileWriter fw = new FileWriter(arquivo);  
-			BufferedWriter bw = new BufferedWriter(fw);  
-			
-			String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator()); // Transforma os '\n' em lineSeparators, para preservar a identação 
-			//ao utilizar a classe BufferedWriter
-			txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1); // retira-se o último caractere, que é um '\n' a mais
-			bw.write(txtAtualizado); // escreve o texto decodificado 
-			bw.close();
-		}
+	    No arvore = lerArvore(file);
+	    BitSet bits = lerTexto(file);
+	   
+		String txtDecod = algoritmoHuffman.decodificarTexto(arvore, bits); // Decodifica o texto, a partir da árvore e da sequência de bits
+		Long hashNova = funcaoHash(txtDecod); // É feito um hashing no texto decodificado
+		verificarIntegridade(hashOriginal, hashNova); // verificar se o arquivo não foi corrompido
+		
+		/* Métodos para a escrita no arquivo*/
+		File arquivo = new File(file.getPath().replace(".monster", "")); // É retirado a extensão .monster do arquivo
+		FileWriter fw = new FileWriter(arquivo);  
+		BufferedWriter bw = new BufferedWriter(fw);  
+		
+		String txtAtualizado = txtDecod.replaceAll("\n", System.lineSeparator()); // Transforma os '\n' em lineSeparators, para preservar a identação 
+		//ao utilizar a classe BufferedWriter
+		txtAtualizado = txtAtualizado.substring(0,txtAtualizado.length()-1); // retira-se o último caractere, que é um '\n' a mais
+		bw.write(txtAtualizado); // escreve o texto decodificado 
+		bw.close();
+	}
 	/**
 	 * Método que realiza a vericação da integridade 
 	 * @param hashOriginal
