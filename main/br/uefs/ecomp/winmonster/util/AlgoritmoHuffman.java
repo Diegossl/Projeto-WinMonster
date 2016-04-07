@@ -9,17 +9,27 @@ import java.util.BitSet;
 import br.uefs.ecomp.winmonster.exceptions.ArquivoVazioException;
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
 
+/******************************************************************************* 
+Autor: Victor Munduruca e Diego Lourenço
+Componente Curricular: MI Algoritmos II
+Concluido em: 07/04/2016
+Declaro que este código foi elaborado por mim de forma individual e não contém nenhum 
+trecho de código de outro colega ou de outro autor, tais como provindos de livros e  
+apostilas, e páginas ou documentos eletrônicos da Internet. Qualquer trecho de código 
+de outra autoria que não a minha está destacado com uma citação para o autor e a fonte 
+do código, e estou ciente que estes trechos não serão considerados para fins de avaliação. 
+******************************************************************************************/ 
 
 /**
  * Essa classe implementa o algoritmo de compactação de Huffman
- * @author Victor Munduruca e Diego Lourenço
+ * @author Victor Munduruca
+ * @author Diego Lourenço
  *
  */
 public class AlgoritmoHuffman {
 
 	private static String arestas = ""; // String utilizada pelo método recursivo mapeamento
 	private  String textoOriginal; // Texto lido na compactação
-//	private String[] mapa = new String[256]; // Mapa de Strings, onde o índice se refere ao caractere e a String, a sequência correspondente
 	private String[] mapa = new String[65536]; // Mapa de Strings, onde o índice se refere ao caractere e a String, a sequência correspondente
 	
 	
@@ -63,7 +73,6 @@ public class AlgoritmoHuffman {
 	 * @throws ArquivoVazioException 
 	 */
 	public Fila contaFrequencias(File arquivo) throws IOException, ArquivoVazioException{
-		//No[] vetor = new No[256]; // Vetor que armazena as frequências, onde os índices são os caracteres
 		No[] vetor = new No[65536]; // Vetor que armazena as frequências, onde os índices são os caracteres
 		Fila filaNo = new Fila(); // fila normal pra armazenar os nós 
 		String texto = ""; // representa cada linha lida
@@ -72,6 +81,7 @@ public class AlgoritmoHuffman {
 		FileReader file = new FileReader(arquivo);
 		BufferedReader leitura = new BufferedReader(file);
 		if(!leitura.ready()) {
+			leitura.close();
 			throw new ArquivoVazioException();
 		}
 		while(leitura.ready()){ 
@@ -167,14 +177,15 @@ public class AlgoritmoHuffman {
 			mapa[(char) no.getSimbolo()] = arestas; // Adiciona a sequência de acordo com o caractere
 			return;
 		}
-		arestas = arestas + 0;
-		mapeamento(no.getFilhoDaEsquerda());
+		arestas = arestas + 0; //Adiciona 0 na string a cada No da esquerda, até chegar na folha.
+		mapeamento(no.getFilhoDaEsquerda());//Percorre recursivamente os Nos da esquerda até chegar na folha
+		//Ao chegar na folha a recursão começa a "voltar" e então vai deletando os yultimos caracteres da String
 		arestas = arestas.substring(0, arestas.length() - 1);
 
-		arestas = arestas + 1;
-		mapeamento(no.getFilhoDaDireita());
+		arestas = arestas + 1;//Adiciona 1 na string a cada No da direita, até chegar na folha.
+		mapeamento(no.getFilhoDaDireita());//Percorre recursivamente os Nos da direita até chegar na folha
+		//Ao chegar na folha a recursão começa a "voltar" e então vai deletando os yultimos caracteres da String
 		arestas = arestas.substring(0, arestas.length() - 1);
-
 	}
 
 	/**

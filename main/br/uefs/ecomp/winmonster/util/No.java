@@ -2,8 +2,14 @@ package br.uefs.ecomp.winmonster.util;
 
 import java.io.Serializable;
 
+/**
+ * Classe que representa os nós da árvore de Huffman
+ * @author Victor
+ * @author Diego
+ *
+ */
 @SuppressWarnings("serial")
-public class No implements Comparable<Object>, Serializable {
+public class No implements Comparable<Object>, Serializable { // Isso é feito para poder escrever os objetos no arquivo
 	
 	private int frequencia;
 	private char simbolo;

@@ -1,27 +1,21 @@
 package br.uefs.ecomp.winmonster.controller;
 
-import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.BitSet;
-
 import br.uefs.ecomp.winmonster.exceptions.ArquivoCorrompidoException;
 import br.uefs.ecomp.winmonster.exceptions.ArquivoVazioException;
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
 import br.uefs.ecomp.winmonster.util.AlgoritmoHuffman;
 import br.uefs.ecomp.winmonster.util.Fila;
-import br.uefs.ecomp.winmonster.util.Iterador;
-import br.uefs.ecomp.winmonster.util.Lista;
 import br.uefs.ecomp.winmonster.util.No;
-import br.uefs.ecomp.winmonster.util.NoMapa;
 /**
  * 
  * @author Victor Munduruca
@@ -30,6 +24,17 @@ import br.uefs.ecomp.winmonster.util.NoMapa;
  * a design pattern Singleton
  *
  */
+/******************************************************************************* 
+Autor: Victor Munduruca e Diego Lourenço
+Componente Curricular: MI Algoritmos II
+Concluido em: 07/04/2016
+Declaro que este código foi elaborado por mim de forma individual e não contém nenhum 
+trecho de código de outro colega ou de outro autor, tais como provindos de livros e  
+apostilas, e páginas ou documentos eletrônicos da Internet. Qualquer trecho de código 
+de outra autoria que não a minha está destacado com uma citação para o autor e a fonte 
+do código, e estou ciente que estes trechos não serão considerados para fins de avaliação. 
+******************************************************************************************/ 
+
 public class AdministradorController {
 
 
@@ -86,9 +91,11 @@ public class AdministradorController {
 		No raiz = algoritmoHuffman.arvore(filaOrdenada); // Constroe e árvore com base na fila de prioridade
 		return raiz;
 	}
-	
-	
-	
+	/**
+	 * 
+	 * @param texto
+	 * @return
+	 */
 	public Long funcaoHash(String texto){
 		int valor = 0, posicao = 0;
 		Long soma = (long) 0;
