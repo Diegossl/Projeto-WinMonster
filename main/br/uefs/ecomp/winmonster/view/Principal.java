@@ -7,5 +7,6 @@ public class Principal {
 	public static void main(String [] args){
 		GUI gui = new GUI();
 		gui.InterfaceGrafica();		
+		System.out.println(System.getProperty("file.encoding"));
 	}
 }

@@ -24,25 +24,28 @@ public class GUI {
 	}
 	
 	public void InterfaceGrafica(){
-		botaoCompactar = new JButton("Compactar");
-		botaoDescompactar = new JButton("Descompactar");
-		sobre = new JMenuItem("Sobre");
-		sair = new JMenuItem("Sair");
-		opcao = new JMenu("Opções");
-		opcao.add(sobre);
-		opcao.add(sair);
-		menu = new JMenuBar();
-		menu.add(opcao);
-		splash = new Splash();
+		botaoCompactar = new JButton("Compactar");//Crio um botao para descompactar
+		botaoDescompactar = new JButton("Descompactar");// Crio para o menu a opção Sobre
+		sobre = new JMenuItem("Sobre");// Crio para o menu a opção Sair
+		sair = new JMenuItem("Sair");//Crio um menu de opções
+		opcao = new JMenu("Opções");//Adiciono a opção Sobre ao novo menu
+		opcao.add(sobre);//Adiciono a opção Sobre ao menu novo menu
+		opcao.add(sair);//Adiciono a opção Sair ao menu novo menu
+		menu = new JMenuBar();//Crio o Menu
+		menu.add(opcao);//Adiciono as opções ao Menu
+		splash = new Splash();//Instancio uma tela de Splash
+		/*Dimensiono os botões*/
 		botaoCompactar.setBounds(80, 40, 120, 50);
 		botaoDescompactar.setBounds(80, 100, 120, 50);
 		
+		//Crio um painel e faço as configurações
 		JPanel painel = new JPanel();
 		painel.setLayout(null);
 		painel.setBackground(Color.white);
 		painel.add(botaoCompactar);
 		painel.add(botaoDescompactar);
 		
+		//Crio a janela e faço as configurações
 		JFrame janela = new JFrame("WinMonster");
 		janela.setSize(300, 250);
 		janela.setLocationRelativeTo(null);
@@ -51,15 +54,19 @@ public class GUI {
 		janela.add(painel);
 		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		//Crio uma instancia de ManusearBotao para passar as ações do botões
 		manusearBotao = new ManusearBotao(botaoCompactar, botaoDescompactar);
+		//Passo o objeto ManusearBotao para o botao, para assim o metodo decidir o que fzer.
 		botaoCompactar.addActionListener(manusearBotao);
 		botaoDescompactar.addActionListener(manusearBotao);
+		
+		//Mesmo procedimento do Botao
 		manusearMenu = new ManusearMenu(sobre, sair, janela);
 		sobre.addActionListener(manusearMenu);
 		sair.addActionListener(manusearMenu);
 		
-		splash.showSplash();
-		janela.setVisible(true);
+		splash.showSplash();//Exibo o splash screenn
+		janela.setVisible(true);//Torno visivel a tela
 
 	}
 }

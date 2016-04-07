@@ -1,3 +1,4 @@
+
 package br.uefs.ecomp.winmonster.view;
 
 import java.awt.event.ActionEvent;
@@ -12,8 +13,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import br.uefs.ecomp.winmonster.controller.AdministradorController;
 import br.uefs.ecomp.winmonster.exceptions.ArquivoCorrompidoException;
+import br.uefs.ecomp.winmonster.exceptions.ArquivoVazioException;
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
-import br.uefs.ecomp.winmonster.exceptions.FilaNulaException;
 import br.uefs.ecomp.winmonster.util.Fila;
 import br.uefs.ecomp.winmonster.util.No;
 
@@ -36,7 +37,6 @@ public class ManusearBotao implements ActionListener {
 			FileNameExtensionFilter filtroTxt = new FileNameExtensionFilter("Arquivos de texto", "txt");
 			FileNameExtensionFilter filtroCpp = new FileNameExtensionFilter("Arquivo de c++", "cpp");
 			FileNameExtensionFilter filtroHtml = new FileNameExtensionFilter("Arquivos html", "html");
-			
 			fc.setFileFilter(filtroHtml);
 			fc.setFileFilter(filtroCpp);
 			fc.setFileFilter(filtroTxt);
@@ -45,10 +45,12 @@ public class ManusearBotao implements ActionListener {
 			
 			int resposta = fc.showOpenDialog(null);
 			if (resposta == JFileChooser.APPROVE_OPTION) { 
-				File arquivo = fc.getSelectedFile();
-				String nomeArquivo = fc.getSelectedFile().getName();
+				File arquivo = fc.getSelectedFile();//Armazeno o arquivo
+				String nomeArquivo = fc.getSelectedFile().getName();//armazeno o nome do arquivo
 				String caminho = arquivo.getPath().replace(nomeArquivo, "");
 				try{
+					/*Faço o processo de copactação por huffman passando por cada metodo responssável pela
+					 * execução do algoritmo.*/
 					Fila fila = controllerAdm.filaDeFrequencias(arquivo);
 					No raiz = controllerAdm.construirArvore(fila);
 					controllerAdm.getHuff().mapeamento(raiz);
@@ -58,7 +60,7 @@ public class ManusearBotao implements ActionListener {
 
 				}catch(IOException e2){
 					e2.printStackTrace();
-				} catch (FilaNulaException e3) {
+				} catch (ArquivoVazioException e3) {
 					e3.printStackTrace();
 				} catch (ArvoreNulaException e4) {
 					e4.printStackTrace();
@@ -73,10 +75,10 @@ public class ManusearBotao implements ActionListener {
 			fc.setFileFilter(filtroComp);
 			int resposta = fc.showOpenDialog(null); //abre a janela de seleção e guarda a ação do usuário em resposta
 			if (resposta == JFileChooser.APPROVE_OPTION) { 
-				File arquivo = fc.getSelectedFile();
-				String nomeArquivo = fc.getSelectedFile().getName();
+				File arquivo = fc.getSelectedFile();//Referencio o arquivo que foi selecionado
+				String nomeArquivo = fc.getSelectedFile().getName();//armazeno o nome do arquivo
 				try {
-					controllerAdm.descompactar(arquivo, nomeArquivo);
+					controllerAdm.descompactar(arquivo, nomeArquivo);//Chamo o metodo pra descompactar
 					JOptionPane.showMessageDialog(null, "Descompactação realizada com sucesso!");
 
 				} catch (ClassNotFoundException e1) {
@@ -95,3 +97,4 @@ public class ManusearBotao implements ActionListener {
 		}
 	}
 }
+

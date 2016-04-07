@@ -14,8 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.uefs.ecomp.winmonster.exceptions.ArquivoCorrompidoException;
+import br.uefs.ecomp.winmonster.exceptions.ArquivoVazioException;
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
-import br.uefs.ecomp.winmonster.exceptions.FilaNulaException;
 import br.uefs.ecomp.winmonster.util.Fila;
 import br.uefs.ecomp.winmonster.util.No;
 
@@ -64,12 +64,14 @@ public class AdministradorControllerTeste {
 			fila = controllerAdm.filaDeFrequencias(file);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (ArquivoVazioException e) {
+			e.printStackTrace();
 		}
 
 		No raiz = null;
 		try {
 			raiz = controllerAdm.construirArvore(fila);
-		} catch (FilaNulaException e) {
+		} catch (ArquivoVazioException e) {
 			e.printStackTrace();
 		}
 
@@ -82,7 +84,7 @@ public class AdministradorControllerTeste {
 		String textoCodificado = controllerAdm.getHuff().codificarTexto(controllerAdm.getHuff().getTextoOriginal());
 
 		try {
-			controllerAdm.compactar(raiz, textoCodificado, file.getPath(), file.getPath().replace(file.getName(), ""), controllerAdm.funcaoHash(controllerAdm.getHuff().getTextoOriginal()));
+			controllerAdm.compactar(raiz, textoCodificado,file.getPath().replace(file.getName(), ""), file.getName(), controllerAdm.funcaoHash(controllerAdm.getHuff().getTextoOriginal()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -114,12 +116,15 @@ public class AdministradorControllerTeste {
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
+		} catch(ArquivoVazioException e) {
+			e.printStackTrace();
+			fail();
 		}
 
 		No raiz = null;
 		try {
 			raiz = controllerAdm.construirArvore(fila);
-		} catch (FilaNulaException e) {
+		} catch (ArquivoVazioException e) {
 			e.printStackTrace();
 			fail();
 		}

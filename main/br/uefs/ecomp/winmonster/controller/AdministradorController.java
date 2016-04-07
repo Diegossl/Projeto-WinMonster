@@ -14,8 +14,8 @@ import java.io.ObjectOutputStream;
 import java.util.BitSet;
 
 import br.uefs.ecomp.winmonster.exceptions.ArquivoCorrompidoException;
+import br.uefs.ecomp.winmonster.exceptions.ArquivoVazioException;
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
-import br.uefs.ecomp.winmonster.exceptions.FilaNulaException;
 import br.uefs.ecomp.winmonster.util.AlgoritmoHuffman;
 import br.uefs.ecomp.winmonster.util.Fila;
 import br.uefs.ecomp.winmonster.util.Iterador;
@@ -68,8 +68,9 @@ public class AdministradorController {
 	 * @param Local onde o arquivo se encontra 
 	 * @return Fila ordenada de nós de árvore, com base nas suas frequências
 	 * @throws IOException
+	 * @throws ArquivoVazioException 
 	 */
-	public Fila filaDeFrequencias(File arquivo) throws IOException{
+	public Fila filaDeFrequencias(File arquivo) throws IOException, ArquivoVazioException{
 		Fila filaOrdenada = algoritmoHuffman.contaFrequencias(arquivo);
 		return filaOrdenada;
 	}
@@ -79,9 +80,9 @@ public class AdministradorController {
 	 * @return Uma árvore feita com base no algoritmo de huffman
 	 * @throws FilaNulaException
 	 */
-	public No construirArvore(Fila filaOrdenada) throws FilaNulaException{
+	public No construirArvore(Fila filaOrdenada) throws ArquivoVazioException{
 		if(filaOrdenada == null) // Verifica se a fila é nula
-			throw new FilaNulaException();
+			throw new ArquivoVazioException();
 		No raiz = algoritmoHuffman.arvore(filaOrdenada); // Constroe e árvore com base na fila de prioridade
 		return raiz;
 	}
@@ -110,6 +111,7 @@ public class AdministradorController {
 	 */
 	public void compactar(No raiz, String txtCodificado, String caminho, String nomeArq, Long hash) throws IOException {
 		
+		//nomeArq = trocaNome(nomeArq);
 		nomeArq = nomeArq + ".monster"; // É adicionado a extensão proprietária para a descompactação 
 		caminho = caminho + nomeArq; // O caminho é atualizafo adicionando o nome do arquivo
 		
@@ -203,6 +205,7 @@ public class AdministradorController {
 	    BitSet bits = lerTexto(file);
 	   
 		String txtDecod = algoritmoHuffman.decodificarTexto(arvore, bits); // Decodifica o texto, a partir da árvore e da sequência de bits
+		
 		Long hashNova = funcaoHash(txtDecod); // É feito um hashing no texto decodificado
 		verificarIntegridade(hashOriginal, hashNova); // verificar se o arquivo não foi corrompido
 		

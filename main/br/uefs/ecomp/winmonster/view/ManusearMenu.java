@@ -24,6 +24,7 @@ public class ManusearMenu implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == sobre){
+			//Crio uma janela para exibir um texto sobre o software.
 			JPanel painel = new JPanel();
 			texto = new JLabel("<html> V. 1.0 <br>O WinMonster é um software desenvolvido com a finalidade de comprimir e descomprimir arquivos de tamanhos variados.</html>");
 			texto.setLocation(5, 0);
@@ -42,8 +43,7 @@ public class ManusearMenu implements ActionListener {
 			novaJanela.setVisible(true);
 		}
 		if(e.getSource() == sair){
-			janela.dispose();
+			janela.dispose();//Fecho a janela atual
 		}
 	}
-
 }

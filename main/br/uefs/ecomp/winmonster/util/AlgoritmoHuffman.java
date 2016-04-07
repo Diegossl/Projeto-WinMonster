@@ -6,8 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.BitSet;
 
+import br.uefs.ecomp.winmonster.exceptions.ArquivoVazioException;
 import br.uefs.ecomp.winmonster.exceptions.ArvoreNulaException;
-import br.uefs.ecomp.winmonster.exceptions.FilaNulaException;
+
 
 /**
  * Essa classe implementa o algoritmo de compactação de Huffman
@@ -18,7 +19,8 @@ public class AlgoritmoHuffman {
 
 	private static String arestas = ""; // String utilizada pelo método recursivo mapeamento
 	private  String textoOriginal; // Texto lido na compactação
-	private String[] mapa = new String[256]; // Mapa de Strings, onde o índice se refere ao caractere e a String, a sequência correspondente
+//	private String[] mapa = new String[256]; // Mapa de Strings, onde o índice se refere ao caractere e a String, a sequência correspondente
+	private String[] mapa = new String[65536]; // Mapa de Strings, onde o índice se refere ao caractere e a String, a sequência correspondente
 	
 	
 	/**
@@ -58,16 +60,20 @@ public class AlgoritmoHuffman {
 	 * @param arquivo
 	 * @return Fila de Prioridade de objetos Nós
 	 * @throws IOException
+	 * @throws ArquivoVazioException 
 	 */
-	public Fila contaFrequencias(File arquivo) throws IOException{
-		No[] vetor = new No[256]; // Vetor que armazena as frequências, onde os índices são os caracteres
+	public Fila contaFrequencias(File arquivo) throws IOException, ArquivoVazioException{
+		//No[] vetor = new No[256]; // Vetor que armazena as frequências, onde os índices são os caracteres
+		No[] vetor = new No[65536]; // Vetor que armazena as frequências, onde os índices são os caracteres
 		Fila filaNo = new Fila(); // fila normal pra armazenar os nós 
 		String texto = ""; // representa cada linha lida
 		
 		StringBuffer str = new StringBuffer(); // Realiza a leitura do texto original
 		FileReader file = new FileReader(arquivo);
 		BufferedReader leitura = new BufferedReader(file);
-		
+		if(!leitura.ready()) {
+			throw new ArquivoVazioException();
+		}
 		while(leitura.ready()){ 
 			texto = leitura.readLine()+ "\n";// Lê a linha
 			str.append(texto); // Adiciona a linha lida ao texto original
@@ -97,9 +103,7 @@ public class AlgoritmoHuffman {
 	 * @return Árvore criada a partir da fila de prioridade, seguindo o algoritmo de Huffman
 	 * @throws FilaNulaException
 	 */
-	public No arvore(Fila fila) throws FilaNulaException{
-		if(fila.estaVazia()) // veriifica se a fila está vazia
-			throw new FilaNulaException();
+	public No arvore(Fila fila){
 		if(fila.obterTamanho() == 1) // Se a fila só conter um elemento, um nó com esse elemento é retornado
 			return (No) fila.removerInicio();
 		No noPai = null; // noPai é inicializado
